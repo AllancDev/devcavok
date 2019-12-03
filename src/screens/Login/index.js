@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { StatusBar, Platform } from 'react-native';
+import { StackActions, NavigationActions } from 'react-navigation';
+import { connect } from 'react-redux';
+
+import useDevsCavokApi from '../../useDevsCavokApi';
 import {
     Container,
     Header,
@@ -15,10 +19,30 @@ import {
 
 const Page = () => {
 
+    const api = useDevsCavokApi;
     const [activeMenu, setActiveMenu] = useState('signup');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState();
+    const [password, setPassword] = useState('');
+
+    const handleSignIn = async () => {
+        if(email && password) {
+            const res = await api.signin(email, password);
+            if(res.error) {
+                alert(res.error);
+            } else {
+                // 1. Guardar o token no reducer
+                 
+
+                // 2. redirecionar para o home
+            }
+            
+        }
+    }
+
+    const handleSignUp = () => {
+
+    }
 
     return (
         <Container behavior={Platform.OS === 'ios' ? 'padding' : null} >
@@ -46,13 +70,13 @@ const Page = () => {
             <Input placeholder="Senha" value={password} onChangeText={t => setPassword(t)} placeholderTextColor="#999" />
 
             {activeMenu == 'signin' &&
-                <ActionButton>
+                <ActionButton onPress = { handleSignIn } >
                     <ActionText>Entrar</ActionText>
                 </ActionButton>
             }
 
             {activeMenu == 'signup' &&
-                <ActionButton>
+                <ActionButton onPress = { handleSignUp}>
                     <ActionText>Cadastrar</ActionText>
                 </ActionButton>
             }
@@ -62,4 +86,15 @@ const Page = () => {
     );
 }
 
-export default Page;
+const mapStateToProps = ( state ) => {
+    return {
+        token: state.userReducer.token
+    };
+}
+
+const mapDispatchToProps = ( dispatch) => {
+    return {
+        setToken: (token) => dispatch({ type: 'SET_TOKEN', payload: { token }})
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Page);
