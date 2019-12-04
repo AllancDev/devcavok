@@ -86,13 +86,6 @@ const Page = props => {
                     underlayColor="transparent">
                     <MenuItemText>Login</MenuItemText>
                 </MenuItem>
-
-                <MenuItem
-                    active={activeMenu === 'signup'}
-                    onPress={() => setActiveMenu('signup')}
-                    underlayColor="transparent">
-                    <MenuItemText>Cadastrar</MenuItemText>
-                </MenuItem>
             </Menu>
 
             {activeMenu == 'signup' && (
